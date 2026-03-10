@@ -14,8 +14,8 @@ import {
 import { Button } from "@/components/ui/button";
 
 const menuItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/products", label: "Products", icon: Package },
+  { href: "/dashboard", label: "Bảng điều khiển", icon: LayoutDashboard },
+  { href: "/products", label: "Sản phẩm", icon: Package },
 ];
 
 export default function DashboardLayout({ children }) {
@@ -112,7 +112,7 @@ export default function DashboardLayout({ children }) {
             onClick={handleLogout}
           >
             <LogOut className="h-5 w-5" />
-            <span>Logout</span>
+            <span>Đăng xuất</span>
           </Button>
         </div>
       </aside>

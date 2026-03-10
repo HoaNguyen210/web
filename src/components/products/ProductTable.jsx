@@ -16,7 +16,7 @@ export default function ProductTable({
   if (products.length === 0) {
     return (
       <div className="bg-card border border-border rounded-xl p-12 text-center">
-        <p className="text-muted-foreground">No products found</p>
+        <p className="text-muted-foreground">Không tìm thấy sản phẩm nào</p>
       </div>
     );
   }
@@ -28,13 +28,13 @@ export default function ProductTable({
         <table className="w-full">
           <thead>
             <tr className="bg-muted/50 border-b border-border">
-              <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Image</th>
-              <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Product Name</th>
-              <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Category</th>
-              <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Price</th>
-              <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Stock</th>
-              <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Status</th>
-              <th className="text-center px-4 py-3 text-sm font-medium text-muted-foreground">Actions</th>
+              <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Hình ảnh</th>
+              <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Tên sản phẩm</th>
+              <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Danh mục</th>
+              <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Giá</th>
+              <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Kho</th>
+              <th className="text-left px-4 py-3 text-sm font-medium text-muted-foreground">Trạng thái</th>
+              <th className="text-center px-4 py-3 text-sm font-medium text-muted-foreground">Thao tác</th>
             </tr>
           </thead>
           <tbody>
@@ -56,7 +56,7 @@ export default function ProductTable({
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">
-                        No Image
+                        Không có ảnh
                       </div>
                     )}
                   </div>
@@ -105,7 +105,7 @@ export default function ProductTable({
                         : "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400"
                     }`}
                   >
-                    {product.status === "active" ? "Active" : "Inactive"}
+                    {product.status === "active" ? "Hoạt động" : "Không hoạt động"}
                   </span>
                 </td>
 
@@ -116,7 +116,7 @@ export default function ProductTable({
                       variant="ghost"
                       size="icon-sm"
                       onClick={() => onView(product)}
-                      title="View"
+                      title="Xem"
                     >
                       <Eye className="h-4 w-4" />
                     </Button>
@@ -124,7 +124,7 @@ export default function ProductTable({
                       variant="ghost"
                       size="icon-sm"
                       onClick={() => onEdit(product)}
-                      title="Edit"
+                      title="Sửa"
                     >
                       <Pencil className="h-4 w-4" />
                     </Button>
@@ -132,7 +132,7 @@ export default function ProductTable({
                       variant="ghost"
                       size="icon-sm"
                       onClick={() => onDelete(product._id)}
-                      title="Delete"
+                      title="Xóa"
                       className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -149,7 +149,7 @@ export default function ProductTable({
       {totalPages > 1 && (
         <div className="flex items-center justify-between px-4 py-3 border-t border-border bg-muted/30">
           <div className="text-sm text-muted-foreground">
-            Page {currentPage} of {totalPages}
+            Trang {currentPage} của {totalPages}
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -159,7 +159,7 @@ export default function ProductTable({
               disabled={currentPage === 1}
             >
               <ChevronLeft className="h-4 w-4" />
-              Previous
+              Trước
             </Button>
             <Button
               variant="outline"
@@ -167,7 +167,7 @@ export default function ProductTable({
               onClick={() => onPageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
             >
-              Next
+              Sau
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>

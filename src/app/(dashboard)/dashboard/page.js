@@ -64,26 +64,26 @@ export default function DashboardPage() {
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground">Welcome back! Here&apos;s an overview of your store.</p>
+        <h1 className="text-2xl font-bold">Bảng điều khiển</h1>
+        <p className="text-muted-foreground">Chào mừng đến với trang quản lý</p>
       </div>
 
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <StatCard
-          title="Total Products"
+          title="Tổng sản phẩm"
           value={stats.totalProducts}
           icon={Package}
           color="default"
         />
         <StatCard
-          title="Active Products"
+          title="Sản phẩm hoạt động"
           value={stats.activeProducts}
           icon={CheckCircle}
           color="success"
         />
         <StatCard
-          title="Out of Stock"
+          title="Hết hàng"
           value={stats.outOfStock}
           icon={XCircle}
           color="danger"
@@ -98,25 +98,25 @@ export default function DashboardPage() {
         <div className="bg-card border border-border rounded-xl p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-4">
             <Activity className="h-5 w-5 text-primary" />
-            <h3 className="text-lg font-semibold">Store Status</h3>
+            <h3 className="text-lg font-semibold">Tình trạng cửa hàng</h3>
           </div>
           <div className="space-y-4">
             <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-              <span className="text-sm font-medium">Total Products</span>
+              <span className="text-sm font-medium">Tổng sản phẩm</span>
               <span className="text-sm font-bold">{stats.totalProducts}</span>
             </div>
             <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-              <span className="text-sm font-medium">In Stock</span>
+              <span className="text-sm font-medium">Còn hàng</span>
               <span className="text-sm font-bold text-green-600">
                 {stats.totalProducts - stats.outOfStock}
               </span>
             </div>
             <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-              <span className="text-sm font-medium">Out of Stock</span>
+              <span className="text-sm font-medium">Hết hàng</span>
               <span className="text-sm font-bold text-red-600">{stats.outOfStock}</span>
             </div>
             <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-              <span className="text-sm font-medium">Active</span>
+              <span className="text-sm font-medium">Hoạt động</span>
               <span className="text-sm font-bold text-blue-600">{stats.activeProducts}</span>
             </div>
           </div>

@@ -33,7 +33,7 @@ export async function GET(request) {
       data: products,
     });
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Lỗi đấy data sản phẩm:", error);
     return NextResponse.json(
       { success: false, error: "Failed to fetch products" },
       { status: 500 }
@@ -50,7 +50,7 @@ export async function POST(request) {
     
     if (!body.name || body.price === "" || body.price === null || body.price === undefined || body.stockQuantity === "" || body.stockQuantity === null || body.stockQuantity === undefined) {
       return NextResponse.json(
-        { success: false, error: "Missing required fields: name, price, stockQuantity" },
+        { success: false, error: "Thiếu các trường bắt buộc: name, price, stockQuantity" },
         { status: 400 }
       );
     }
@@ -62,7 +62,7 @@ export async function POST(request) {
       data: product,
     }, { status: 201 });
   } catch (error) {
-    console.error("Error creating product:", error);
+    console.error("Lỗi tạo sản phẩm:", error);
     return NextResponse.json(
       { success: false, error: error.message || "Failed to create product" },
       { status: 500 }
@@ -86,7 +86,7 @@ export async function PUT(request) {
     
     if (!product) {
       return NextResponse.json(
-        { success: false, error: "Product not found" },
+        { success: false, error: "Sản phẩm không tồn tại" },
         { status: 404 }
       );
     }
@@ -96,7 +96,7 @@ export async function PUT(request) {
       data: product,
     });
   } catch (error) {
-    console.error("Error updating product:", error);
+    console.error("Lỗi cập nhật sản phẩm:", error);
     return NextResponse.json(
       { success: false, error: "Failed to update product" },
       { status: 500 }
@@ -114,7 +114,7 @@ export async function DELETE(request) {
     
     if (!id) {
       return NextResponse.json(
-        { success: false, error: "Product ID is required" },
+        { success: false, error: "ID sản phẩm là lỗi" },
         { status: 400 }
       );
     }
@@ -123,7 +123,7 @@ export async function DELETE(request) {
     
     if (!product) {
       return NextResponse.json(
-        { success: false, error: "Product not found" },
+        { success: false, error: "Sản phẩm không tồn tại" },
         { status: 404 }
       );
     }
@@ -133,7 +133,7 @@ export async function DELETE(request) {
       data: product,
     });
   } catch (error) {
-    console.error("Error deleting product:", error);
+    console.error("Lỗi xóa sản phẩm:", error);
     return NextResponse.json(
       { success: false, error: "Failed to delete product" },
       { status: 500 }

@@ -13,7 +13,7 @@ export async function POST(request) {
 
     if (!email || !password) {
       return NextResponse.json(
-        { error: "Email and password are required" },
+        { error: "Email hoặc mật khẩu không đúng" },
         { status: 400 }
       );
     }
@@ -22,7 +22,7 @@ export async function POST(request) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json(
-        { error: "Invalid email format" },
+        { error: "Định dạng mail không hợp lệ" },
         { status: 400 }
       );
     }
@@ -32,7 +32,7 @@ export async function POST(request) {
 
     if (!user) {
       return NextResponse.json(
-        { error: "Invalid email or password" },
+        { error: "Email hoặc mật khẩu không đúng" },
         { status: 401 }
       );
     }
@@ -42,7 +42,7 @@ export async function POST(request) {
 
     if (!isPasswordValid) {
       return NextResponse.json(
-        { error: "Invalid email or password" },
+        { error: "Email hoặc mật khẩu không đúng" },
         { status: 401 }
       );
     }

@@ -8,7 +8,7 @@ export async function GET(request) {
 
     if (!user) {
       return NextResponse.json(
-        { error: "Not authenticated" },
+        { error: "Không xác thực được người dùng" },
         { status: 401 }
       );
     }

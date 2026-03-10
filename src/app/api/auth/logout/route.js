@@ -8,7 +8,7 @@ export async function POST(request) {
 
     return NextResponse.json({
       success: true,
-      message: "Logged out successfully",
+      message: "Đăng xuất thành công",
     });
   } catch (error) {
     console.error("Logout error:", error);

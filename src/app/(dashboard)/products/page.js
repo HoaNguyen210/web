@@ -277,15 +277,15 @@ export default function ProductsPage() {
               p._id === selectedProduct._id ? result.data : p
             )
           );
-          addToast("Product updated successfully!", "success");
+          addToast("Cập nhật thành công!", "success");
         } else {
-          addToast("Failed to update product", "error");
+          addToast("Cập nhật thất bại", "error");
           return;
         }
       }
     } catch (error) {
-      console.error("Error saving product:", error);
-      addToast("Error saving product", "error");
+      console.error("Lỗi lưu sản phẩm:", error);
+      addToast("Lỗi lưu sản phẩm", "error");
       return;
     }
     
@@ -310,8 +310,8 @@ export default function ProductsPage() {
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-2xl font-bold">Products</h1>
-        <p className="text-muted-foreground">Manage your product inventory</p>
+        <h1 className="text-2xl font-bold">Sản phẩm</h1>
+        <p className="text-muted-foreground">Quản lý tồn kho sản phẩm</p>
       </div>
 
       {/* Filters */}
@@ -329,7 +329,7 @@ export default function ProductsPage() {
 
       {/* Results Count */}
       <div className="text-sm text-muted-foreground">
-        Showing {paginatedProducts.length} of {filteredProducts.length} products
+        Hiển thị {paginatedProducts.length} của {filteredProducts.length} sản phẩm
       </div>
 
       {/* Product Table */}
@@ -350,9 +350,9 @@ export default function ProductsPage() {
             {/* Modal Header */}
             <div className="flex items-center justify-between p-6 border-b border-border">
               <h2 className="text-xl font-semibold">
-                {modalMode === "add" && "Add New Product"}
-                {modalMode === "view" && "Product Details"}
-                {modalMode === "edit" && "Edit Product"}
+                {modalMode === "add" && "Thêm sản phẩm mới"}
+                {modalMode === "view" && "Chi tiết sản phẩm"}
+                {modalMode === "edit" && "Sửa sản phẩm"}
               </h2>
               <Button
                 variant="ghost"
@@ -388,13 +388,13 @@ export default function ProductsPage() {
                   
                   <div className="grid grid-cols-2 gap-4 p-4 bg-muted/30 rounded-xl">
                     <div>
-                      <p className="text-sm text-muted-foreground">Price</p>
+                      <p className="text-sm text-muted-foreground">Giá</p>
                       <p className="text-2xl font-bold text-primary">
                         {new Intl.NumberFormat('vi-VN').format(selectedProduct?.price)}đ
                       </p>
                     </div>
                     <div>
-                      <p className="text-sm text-muted-foreground">Stock</p>
+                      <p className="text-sm text-muted-foreground">Kho</p>
                       <p className={`text-2xl font-bold ${
                         selectedProduct?.stockQuantity === 0
                           ? "text-red-500"
@@ -408,19 +408,19 @@ export default function ProductsPage() {
                   </div>
                   
                   <div>
-                    <p className="text-sm text-muted-foreground">Status</p>
+                    <p className="text-sm text-muted-foreground">Trạng thái</p>
                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
                       selectedProduct?.status === "active"
                         ? "bg-green-100 text-green-800"
                         : "bg-gray-100 text-gray-800"
                     }`}>
-                      {selectedProduct?.status === "active" ? "Active" : "Inactive"}
+                      {selectedProduct?.status === "active" ? "Hoạt động" : "Không hoạt động"}
                     </span>
                   </div>
                   
                   {selectedProduct?.description && (
                     <div>
-                      <p className="text-sm text-muted-foreground mb-1">Description</p>
+                      <p className="text-sm text-muted-foreground mb-1">Mô tả</p>
                       <p className="text-foreground">{selectedProduct?.description}</p>
                     </div>
                   )}
@@ -433,13 +433,13 @@ export default function ProductsPage() {
                     className="flex-1"
                     onClick={() => setShowModal(false)}
                   >
-                    Back
+                    Quay lại
                   </Button>
                   <Button
                     variant="destructive"
                     className="flex-1"
                     onClick={async () => {
-                      if (confirm("Are you sure you want to delete this product?")) {
+                      if (confirm("Bạn có chắc chắn muốn xóa sản phẩm này không?")) {
                         try {
                           const response = await fetch(`/api/product?id=${selectedProduct._id}`, {
                             method: "DELETE",
@@ -448,19 +448,19 @@ export default function ProductsPage() {
                           
                           if (result.success) {
                             setProducts(products.filter((p) => p._id !== selectedProduct._id));
-                            addToast("Product deleted successfully!", "success");
+                            addToast("Xóa sản phẩm thành công!", "success");
                             setShowModal(false);
                           } else {
-                            addToast("Failed to delete product", "error");
+                            addToast("Xóa sản phẩm thất bại", "error");
                           }
                         } catch (error) {
                           console.error("Error deleting product:", error);
-                          addToast("Error deleting product", "error");
+                          addToast("Lỗi xóa sản phẩm", "error");
                         }
                       }
                     }}
                   >
-                    Delete
+                    Xóa
                   </Button>
                   <Button
                     className="flex-1"
@@ -477,7 +477,7 @@ export default function ProductsPage() {
                       });
                     }}
                   >
-                    Edit
+                    Sửa
                   </Button>
                 </div>
               </div>

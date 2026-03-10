@@ -36,7 +36,7 @@ export default function ProductFilters({
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <input
             type="text"
-            placeholder="Search products..."
+            placeholder="Tìm kiếm sản phẩm..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full h-10 pl-10 pr-4 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
@@ -44,7 +44,7 @@ export default function ProductFilters({
         </div>
         
         <Button onClick={onAddNew} className="shrink-0">
-          + Add New Product
+          + Thêm sản phẩm mới
         </Button>
       </div>
 
@@ -59,7 +59,7 @@ export default function ProductFilters({
             >
               {categories.map((cat) => (
                 <option key={cat} value={cat}>
-                  {cat === "All" ? "All Categories" : cat}
+                  {cat === "All" ? "Tất cả danh mục" : cat}
                 </option>
               ))}
             </select>
@@ -73,7 +73,7 @@ export default function ProductFilters({
           >
             {statuses.map((status) => (
               <option key={status} value={status}>
-                {status === "All" ? "All Status" : status.charAt(0).toUpperCase() + status.slice(1)}
+                {status === "All" ? "Tất cả trạng thái" : status.charAt(0).toUpperCase() + status.slice(1)}
               </option>
             ))}
           </select>
@@ -86,10 +86,10 @@ export default function ProductFilters({
               onChange={(e) => setSortOrder(e.target.value)}
               className="h-9 px-3 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring"
             >
-              <option value="price-asc">Price: Low to High</option>
-              <option value="price-desc">Price: High to Low</option>
-              <option value="name-asc">Name: A to Z</option>
-              <option value="name-desc">Name: Z to A</option>
+              <option value="price-asc">Giá: Thấp đến cao</option>
+              <option value="price-desc">Giá: Cao đến thấp</option>
+              <option value="name-asc">Tên: A đến Z</option>
+              <option value="name-desc">Tên: Z đến A</option>
             </select>
           </div>
         </div>
@@ -103,7 +103,7 @@ export default function ProductFilters({
             className="text-muted-foreground hover:text-foreground"
           >
             <X className="h-4 w-4 mr-1" />
-            Clear
+            Xóa
           </Button>
         )}
       </div>

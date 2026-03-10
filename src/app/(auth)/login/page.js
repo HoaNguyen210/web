@@ -24,12 +24,12 @@ export default function LoginPage() {
 
     // Client-side validation
     if (!email || !password) {
-      setError("Email and password are required");
+      setError("Email và mật khẩu là bắt buộc");
       return;
     }
 
     if (!validateEmail(email)) {
-      setError("Please enter a valid email address");
+      setError("Vui lòng nhập địa chỉ email hợp lệ");
       return;
     }
 
@@ -47,14 +47,14 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Login failed. Please try again.");
+        setError(data.error || "Đăng nhập thất bại. Vui lòng thử lại.");
         return;
       }
 
       // Redirect to dashboard on success
       router.push("/dashboard");
     } catch (err) {
-      setError("An error occurred. Please try again.");
+      setError("Đã xảy ra lỗi. Vui lòng thử lại.");
     } finally {
       setLoading(false);
     }
@@ -73,9 +73,9 @@ export default function LoginPage() {
 
         {/* Title */}
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold">Welcome Back</h1>
+          <h1 className="text-2xl font-bold">Chào mừng trở lại</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Sign in to your account
+            Đăng nhập vào tài khoản của bạn
           </p>
         </div>
 
@@ -95,7 +95,7 @@ export default function LoginPage() {
               htmlFor="email"
               className="block text-sm font-medium mb-1.5"
             >
-              Email Address
+              Địa chỉ Email
             </label>
             <input
               id="email"
@@ -113,7 +113,7 @@ export default function LoginPage() {
               htmlFor="password"
               className="block text-sm font-medium mb-1.5"
             >
-              Password
+              Mật khẩu
             </label>
             <div className="relative">
               <input
@@ -165,10 +165,10 @@ export default function LoginPage() {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   />
                 </svg>
-                Signing in...
+                Đang đăng nhập...
               </span>
             ) : (
-              "Sign In"
+              "Đăng nhập"
             )}
           </Button>
         </form>

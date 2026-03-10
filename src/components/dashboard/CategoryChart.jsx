@@ -33,7 +33,7 @@ export default function CategoryChart({ data }) {
     labels: data.map((item) => item.category),
     datasets: [
       {
-        label: "Number of Products",
+        label: "Số lượng sản phẩm",
         data: data.map((item) => item.count),
         backgroundColor: [
           "rgba(59, 130, 246, 0.8)", // Blue
@@ -66,7 +66,7 @@ export default function CategoryChart({ data }) {
       },
       title: {
         display: true,
-        text: "Products by Category",
+        text: "Sản phẩm theo danh mục",
         font: {
           size: 16,
           weight: "bold",
