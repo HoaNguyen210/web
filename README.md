@@ -1,7 +1,7 @@
 # Product Management System
 
 ## Demo
-- Live URL: [your-vercel-url]
+- Live URL: [https://vercel.com/hoanguyen210s-projects]
 - Demo Credentials:
   - Email: admin@gmail.com
   - Password: Admin@123
