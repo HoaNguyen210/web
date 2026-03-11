@@ -28,7 +28,7 @@ export default function DashboardPage() {
           const active = products.filter((p) => p.status === "active").length;
           const outOfStock = products.filter((p) => p.stockQuantity === 0).length;
 
-          // Calculate products by category
+          // Tính số lượng sản phẩm theo danh mục
           const categoryMap = {};
           products.forEach((product) => {
             categoryMap[product.category] = (categoryMap[product.category] || 0) + 1;

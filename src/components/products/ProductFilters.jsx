@@ -4,7 +4,7 @@ import React from "react";
 import { Search, Filter, ArrowUpDown, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const categories = ["All", "T-Shirt", "Mug", "Hoodie", "Pants"];
+const categories = ["All", "T-Shirt", "Mug", "Hoodie", "Phone Case"];
 const statuses = ["All", "active", "inactive"];
 
 export default function ProductFilters({

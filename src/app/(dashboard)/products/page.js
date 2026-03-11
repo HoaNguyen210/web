@@ -6,6 +6,7 @@ import ProductFilters from "@/components/products/ProductFilters";
 import ProductTable from "@/components/products/ProductTable";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
+import ConfirmDialog from "@/components/ui/confirm-dialog";
 
 // Categories
 const CATEGORIES = ["T-Shirt", "Mug", "Hoodie", "Phone Case"];
@@ -44,6 +45,13 @@ export default function ProductsPage() {
   
   // Form validation errors
   const [formErrors, setFormErrors] = useState({});
+  
+  // Submit loading state
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Confirm dialog state
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [pendingDeleteId, setPendingDeleteId] = useState(null);
 
   // Fetch products from API
   const fetchProducts = async () => {
@@ -55,11 +63,11 @@ export default function ProductsPage() {
       if (result.success) {
         setProducts(result.data);
       } else {
-        addToast("Failed to load products", "error");
+        addToast("Tải sản phẩm thất bại", "error");
       }
     } catch (error) {
-      console.error("Error fetching products:", error);
-      addToast("Error loading products", "error");
+      console.error("Lỗi tải sản phẩm:", error);
+      addToast("Lỗi tải sản phẩm", "error");
     } finally {
       setLoading(false);
     }
@@ -121,8 +129,8 @@ export default function ProductsPage() {
   }, [searchTerm, selectedCategory, selectedStatus, sortOrder]);
 
   // Handlers
-  const handleAddNew = () => {
-    setModalMode("add");
+  // Reset form data and errors
+  const resetForm = () => {
     setFormData({
       name: "",
       category: "T-Shirt",
@@ -132,13 +140,25 @@ export default function ProductsPage() {
       imageUrl: "",
       description: "",
     });
+    setFormErrors({});
     setSelectedProduct(null);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    resetForm();
+  };
+
+  const handleAddNew = () => {
+    setModalMode("add");
+    resetForm();
     setShowModal(true);
   };
 
   const handleView = (product) => {
     setModalMode("view");
     setSelectedProduct(product);
+    setFormErrors({});
     setShowModal(true);
   };
 
@@ -154,28 +174,55 @@ export default function ProductsPage() {
       imageUrl: product.imageUrl || "",
       description: product.description || "",
     });
+    setFormErrors({});
     setShowModal(true);
   };
 
-  const handleDelete = async (id) => {
-    if (confirm("Are you sure you want to delete this product?")) {
-      try {
-        const response = await fetch(`/api/product?id=${id}`, {
-          method: "DELETE",
-        });
-        const result = await response.json();
-        
-        if (result.success) {
-          setProducts(products.filter((p) => p._id !== id));
-          addToast("Product deleted successfully!", "success");
-        } else {
-          addToast("Failed to delete product", "error");
-        }
-      } catch (error) {
-        console.error("Error deleting product:", error);
-        addToast("Error deleting product", "error");
+  const handleDelete = (id) => {
+    // Show custom confirm dialog instead of browser confirm
+    setPendingDeleteId(id);
+    setShowConfirmDialog(true);
+  };
+
+  // Confirm delete handler
+  const handleConfirmDelete = async () => {
+    if (!pendingDeleteId) return;
+    
+    const id = pendingDeleteId;
+    setShowConfirmDialog(false);
+    setPendingDeleteId(null);
+    
+    try {
+      const response = await fetch(`/api/product?id=${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error(`Lỗi HTTP! mã: ${response.status}`);
       }
+      const result = await response.json();
+      
+      if (result.success) {
+        // Sử dụng functional update để tránh stale closure
+        setProducts((prevProducts) => prevProducts.filter((p) => p._id !== id));
+        addToast("Xóa sản phẩm thành công!", "success");
+        
+        // Reset pagination nếu trang hiện tại trống
+        if (paginatedProducts.length === 1 && currentPage > 1) {
+          setCurrentPage(currentPage - 1);
+        }
+      } else {
+        addToast("Xóa sản phẩm thất bại", "error");
+      }
+    } catch (error) {
+      console.error("Lỗi xóa sản phẩm:", error);
+      addToast("Lỗi xóa sản phẩm", "error");
     }
+  };
+
+  // Cancel delete handler
+  const handleCancelDelete = () => {
+    setShowConfirmDialog(false);
+    setPendingDeleteId(null);
   };
 
   // Format price to VND
@@ -200,26 +247,26 @@ export default function ProductsPage() {
     
     // Name validation
     if (!formData.name.trim()) {
-      errors.name = "Product name is required";
+      errors.name = "Tên sản phẩm là bắt buộc";
     }
     
     // Price validation
     if (formData.price === "" || formData.price === null || formData.price === undefined) {
-      errors.price = "Price is required";
+      errors.price = "Giá là bắt buộc";
     } else if (parseFloat(formData.price) < 0) {
-      errors.price = "Price must be a positive number";
+      errors.price = "Giá phải là số dương";
     }
     
     // Stock validation
     if (formData.stockQuantity === "" || formData.stockQuantity === null || formData.stockQuantity === undefined) {
-      errors.stockQuantity = "Stock quantity is required";
+      errors.stockQuantity = "Số lượng tồn kho là bắt buộc";
     } else if (parseInt(formData.stockQuantity) < 0) {
-      errors.stockQuantity = "Stock must be a positive number";
+      errors.stockQuantity = "Số lượng tồn kho phải là số dương";
     }
     
-    // Image validation (now checks if image is selected - base64 string)
+    // Image validation
     if (!formData.imageUrl || !formData.imageUrl.trim()) {
-      errors.imageUrl = "Image is required";
+      errors.imageUrl = "Hình ảnh là bắt buộc";
     }
     
     setFormErrors(errors);
@@ -231,7 +278,7 @@ export default function ProductsPage() {
     
     // Validate form
     if (!validateForm()) {
-      addToast("Please fill in all required fields", "error");
+      addToast("Vui lòng điền đầy đủ thông tin bắt buộc", "error");
       return;
     }
     
@@ -241,9 +288,11 @@ export default function ProductsPage() {
       stockQuantity: parseInt(formData.stockQuantity),
     };
 
+    setIsSubmitting(true);
+    
     try {
       if (modalMode === "add") {
-        // Tạo mới san phẩm 
+        // Tạo mới sản phẩm 
         const response = await fetch("/api/product", {
           method: "POST",
           headers: {
@@ -254,10 +303,12 @@ export default function ProductsPage() {
         const result = await response.json();
         
         if (result.success) {
-          setProducts([...products, result.data]);
-          addToast("Product added successfully!", "success");
+          // Sử dụng functional update để tránh stale closure
+          setProducts((prevProducts) => [...prevProducts, result.data]);
+          addToast("Thêm sản phẩm thành công!", "success");
         } else {
-          addToast("Failed to add product", "error");
+          addToast("Thêm sản phẩm thất bại", "error");
+          setIsSubmitting(false);
           return;
         }
       } else if (modalMode === "edit") {
@@ -272,23 +323,26 @@ export default function ProductsPage() {
         const result = await response.json();
         
         if (result.success) {
-          setProducts(
-            products.map((p) =>
+          setProducts((prevProducts) =>
+            prevProducts.map((p) =>
               p._id === selectedProduct._id ? result.data : p
             )
           );
           addToast("Cập nhật thành công!", "success");
         } else {
           addToast("Cập nhật thất bại", "error");
+          setIsSubmitting(false);
           return;
         }
       }
     } catch (error) {
       console.error("Lỗi lưu sản phẩm:", error);
       addToast("Lỗi lưu sản phẩm", "error");
+      setIsSubmitting(false);
       return;
     }
     
+    setIsSubmitting(false);
     setShowModal(false);
   };
 
@@ -431,7 +485,7 @@ export default function ProductsPage() {
                   <Button
                     variant="outline"
                     className="flex-1"
-                    onClick={() => setShowModal(false)}
+                    onClick={handleCloseModal}
                   >
                     Quay lại
                   </Button>
@@ -439,24 +493,24 @@ export default function ProductsPage() {
                     variant="destructive"
                     className="flex-1"
                     onClick={async () => {
-                      if (confirm("Bạn có chắc chắn muốn xóa sản phẩm này không?")) {
-                        try {
-                          const response = await fetch(`/api/product?id=${selectedProduct._id}`, {
-                            method: "DELETE",
-                          });
-                          const result = await response.json();
-                          
-                          if (result.success) {
-                            setProducts(products.filter((p) => p._id !== selectedProduct._id));
-                            addToast("Xóa sản phẩm thành công!", "success");
-                            setShowModal(false);
-                          } else {
-                            addToast("Xóa sản phẩm thất bại", "error");
-                          }
-                        } catch (error) {
-                          console.error("Error deleting product:", error);
-                          addToast("Lỗi xóa sản phẩm", "error");
+                      const productId = selectedProduct._id;
+                      try {
+                        const response = await fetch(`/api/product?id=${productId}`, {
+                          method: "DELETE",
+                        });
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                          // Use functional update to avoid stale closure
+                          setProducts((prevProducts) => prevProducts.filter((p) => p._id !== productId));
+                          addToast("Xóa sản phẩm thành công!", "success");
+                          handleCloseModal();
+                        } else {
+                          addToast("Xóa sản phẩm thất bại", "error");
                         }
+                      } catch (error) {
+                        console.error("Error deleting product:", error);
+                        addToast("Lỗi xóa sản phẩm", "error");
                       }
                     }}
                   >
@@ -475,6 +529,7 @@ export default function ProductsPage() {
                         imageUrl: selectedProduct.imageUrl || "",
                         description: selectedProduct.description || "",
                       });
+                      setFormErrors({});
                     }}
                   >
                     Sửa
@@ -633,6 +688,17 @@ export default function ProductsPage() {
           </div>
         </div>
       )}
+
+      {/* Confirm Delete Dialog */}
+      <ConfirmDialog
+        isOpen={showConfirmDialog}
+        title="Xóa sản phẩm"
+        message="Bạn có chắc chắn muốn xóa sản phẩm này không? Hành động này không thể hoàn tác."
+        confirmText="Xóa"
+        cancelText="Hủy"
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+      />
     </div>
   );
 }
