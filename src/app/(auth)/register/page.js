@@ -1,15 +1,19 @@
-"use client";
+ "use client";
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff, ShoppingBag, AlertCircle, User } from "lucide-react";
 import Link from "next/link";
-import { Eye, EyeOff, ShoppingBag, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: ""
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,13 +23,19 @@ export default function LoginPage() {
     return emailRegex.test(email);
   };
 
+  const validatePassword = (password) => {
+    return password.length >= 6;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
+    const { name, email, password, confirmPassword } = formData;
+
     // Client-side validation
-    if (!email || !password) {
-      setError("Email và mật khẩu là bắt buộc");
+    if (!name || !email || !password || !confirmPassword) {
+      setError("Vui lòng điền đầy đủ thông tin");
       return;
     }
 
@@ -34,31 +44,48 @@ export default function LoginPage() {
       return;
     }
 
+    if (!validatePassword(password)) {
+      setError("Mật khẩu phải có ít nhất 6 ký tự");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Mật khẩu xác nhận không khớp");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ name, email, password }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Đăng nhập thất bại. Vui lòng thử lại.");
+        setError(data.error || "Đăng ký thất bại. Vui lòng thử lại.");
         return;
       }
 
-      // Redirect to dashboard on success
-      router.push("/dashboard");
+      // Redirect to login on success
+      router.push("/login");
     } catch (err) {
       setError("Đã xảy ra lỗi. Vui lòng thử lại.");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
 
   return (
@@ -74,54 +101,69 @@ export default function LoginPage() {
 
         {/* Title */}
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold">Chào mừng trở lại</h1>
+          <h1 className="text-2xl font-bold">Tạo tài khoản mới</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Đăng nhập vào tài khoản của bạn
+            Đăng ký để bắt đầu quản lý cửa hàng
           </p>
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="flex items-center gap-2 p-3 mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg dark:bg-red-900/20 dark:border-red-800">
+          <div className="flex items-center gap-2 p-3 mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg">
             <AlertCircle className="h-4 w-4 shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
-        {/* Login Form */}
+        {/* Register Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Name */}
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium mb-1.5">
+              Họ tên
+            </label>
+            <div className="relative">
+              <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <input
+                id="name"
+                name="name"
+                type="text"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="Nguyễn Văn A"
+                className="w-full h-10 pl-10 pr-3 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
+              />
+            </div>
+          </div>
+
           {/* Email */}
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium mb-1.5"
-            >
+            <label htmlFor="email" className="block text-sm font-medium mb-1.5">
               Địa chỉ Email
             </label>
             <input
               id="email"
+              name="email"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@gmail.com"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="example@gmail.com"
               className="w-full h-10 px-3 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
             />
           </div>
 
           {/* Password */}
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium mb-1.5"
-            >
+            <label htmlFor="password" className="block text-sm font-medium mb-1.5">
               Mật khẩu
             </label>
             <div className="relative">
               <input
                 id="password"
+                name="password"
                 type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={formData.password}
+                onChange={handleChange}
                 placeholder="••••••••"
                 className="w-full h-10 px-3 pr-10 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
               />
@@ -139,7 +181,25 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Submit Button */}
+          {/* Confirm Password */}
+          <div>
+            <label htmlFor="confirmPassword" className="block text-sm font-medium mb-1.5">
+              Xác nhận mật khẩu
+            </label>
+            <div className="relative">
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type={showPassword ? "text" : "password"}
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="••••••••"
+                className="w-full h-10 px-3 pr-10 rounded-lg border border-border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-all"
+              />
+            </div>
+          </div>
+
+          {/* Register Button */}
           <Button
             type="submit"
             className="w-full h-10 mt-2"
@@ -147,10 +207,7 @@ export default function LoginPage() {
           >
             {loading ? (
               <span className="flex items-center gap-2">
-                <svg
-                  className="animate-spin h-4 w-4"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
                   <circle
                     className="opacity-25"
                     cx="12"
@@ -158,7 +215,6 @@ export default function LoginPage() {
                     r="10"
                     stroke="currentColor"
                     strokeWidth="4"
-                    fill="none"
                   />
                   <path
                     className="opacity-75"
@@ -166,28 +222,21 @@ export default function LoginPage() {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   />
                 </svg>
-                Đang đăng nhập...
+                Đang đăng ký...
               </span>
             ) : (
-              "Đăng nhập"
+              "Đăng ký tài khoản"
             )}
           </Button>
         </form>
 
-        {/* Register Link */}
+        {/* Login Link */}
         <div className="mt-6 text-center">
           <p className="text-sm text-muted-foreground">
-            Chưa có tài khoản?{" "}
-            <Link href="/register" className="text-primary hover:underline font-medium">
-              Đăng ký ngay
+            Đã có tài khoản?{" "}
+            <Link href="/login" className="text-primary hover:underline font-medium">
+              Đăng nhập ngay
             </Link>
-          </p>
-        </div>
-
-        {/* Demo Credentials */}
-        <div className="mt-6 p-3 bg-muted rounded-lg">
-          <p className="text-xs text-muted-foreground text-center">
-            Demo: admin@gmail.com / Admin@123
           </p>
         </div>
       </div>
